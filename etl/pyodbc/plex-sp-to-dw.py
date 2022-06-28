@@ -45,29 +45,24 @@ try:
     # params = ("123681")
     params = ("123681,300758,310507,306766,300757")
     cursor.execute("{call sproc300758_11728751_1978024 (?)}", params)
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
 
     username = 'mgadmin' 
     password = 'WeDontSharePasswords1!' 
     conn2 = pyodbc.connect('DSN=dw;UID='+username+';PWD='+ password + ';DATABASE=mgdw')
 
     cursor2 = conn2.cursor()
-    im2='''insert into Scratch.accounting_account_06_03
+    im2='''insert into Scratch.accounting_account_test
     values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)''' 
     rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
     print(im2)
-    # cursor2.executemany(im2,rows)
+    cursor2.executemany(im2,rows)
     # cursor2.executemany(im2,rec)
     # print("Length=% s" % len(list))
-    print("cursor.rowcount=%s" % cursor.rowcount)
-    number_of_fetches=0
-    while True:
-        # rows = cursor.fetchmany(1000)  # 2 min 39 seconds
-        rows = cursor.fetchmany(5000)
-        if not rows:
-            break
-        # print(rows)
-        number_of_fetches=number_of_fetches+1
-        cursor2.executemany(im2,rows)
+    # print("cursor.rowcount=%s" % cursor.rowcount)
+    # cursor2.executemany(im2,rows)
 
 
     # if 'cursor' in globals():
@@ -118,12 +113,12 @@ finally:
     print(tdelta) 
     print(type(tdelta)) 
 
-    if 'cursor' in globals():
-        # cursor.commit()
-        cursor.close()
-    if 'conn' in globals():
-        conn.close()
-    #   sys.exit(ret)
+    # if 'cursor' in globals():
+    #     # cursor.commit()
+    #     cursor.close()
+    # if 'conn' in globals():
+    #     conn.close()
+    # #   sys.exit(ret)
     if 'cursor2' in globals():
         cursor2.commit()
         cursor2.close()
