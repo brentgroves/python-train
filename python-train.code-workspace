@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../manim"
+		},
+		{
+			"path": "../conda-env"
 		}
 	],
 	"settings": {}
