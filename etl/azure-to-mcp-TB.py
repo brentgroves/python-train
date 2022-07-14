@@ -90,6 +90,17 @@ try:
     #                           database='mcpdw')
 
     cursor3 = conn3.cursor()
+    # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
+    # txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
+    delete_statement = "delete from Azure.account_period_balance"
+    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
+    # The return value is always the cursor itself:
+    cursor3.execute(delete_statement)
+    # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
+    print_to_stdout(f"{delete_statement} - rowcount={cursor3.rowcount}")
+    # print_to_stdout(f"{txt} - messages={cursor2.messages}")
+
+    conn3.commit()
 
     im2 = '''insert into Azure.account_period_balance (pcn,account_no,period,period_display,debit,ytd_debit,credit,ytd_credit,balance,ytd_balance)    
     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
