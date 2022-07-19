@@ -30,8 +30,7 @@ def print_to_stderr(*a):
 
 try:
     ret = 0
-    PCNList = '123681'
-    PeriodOffset = 0
+    PCNList = '123681,300758'
     
     username = 'mg.odbcalbion'
     password = 'Mob3xalbion'
@@ -68,8 +67,8 @@ try:
     conn = pyodbc.connect('DSN=Plex;UID='+username+';PWD='+ password)
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
     cursor = conn.cursor()
-
-    cursor.execute("{call sproc123681_11728751_2087993(?,?,?,?)}", PCNList)
+    # AccountingAccountSummaryOpenPeriod_DW_Import
+    cursor.execute("{call sproc123681_11728751_2087993(?)}", PCNList)
     rows = cursor.fetchall()
 
     cursor.close()
@@ -96,7 +95,7 @@ try:
     # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
     # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
 
-    im2='''insert into Plex.accounting_account_summary_open_period(pcn,period,account_no,debit,credit,net)
+    im2='''insert into Plex.accounting_account_summary_open_period(pcn,period,account_no,debit,credit,balance)
     values (?,?,?,?,?,?)''' 
     # rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
     cursor2.fast_executemany = True
@@ -131,7 +130,7 @@ try:
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
     # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-    im2 = """insert into Plex.accounting_account_summary_open_period(pcn,period,account_no,debit,credit,net)
+    im2 = """insert into Plex.accounting_account_summary_open_period(pcn,period,account_no,debit,credit,balance)
                 VALUES (%s,%s,%s,%s,%s,%s) """
  
     cursor3.executemany(im2,insertObject)
