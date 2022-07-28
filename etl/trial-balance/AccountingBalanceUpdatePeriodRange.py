@@ -87,8 +87,8 @@ try:
         # https://github.com/mkleehammer/pyodbc/wiki/Cursor
         # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
         # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-        im2='''insert into Plex.accounting_balance_update_period_range (pcn,period_start,period_end,open_period)  
-                values (?,?,?,?)''' 
+        im2='''insert into Plex.accounting_balance_update_period_range (pcn,period_start,period_end,open_period,no_update)  
+                values (?,?,?,?,0)''' 
         cursor2.fast_executemany = True
         cursor2.executemany(im2,rows)
         # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
@@ -112,8 +112,8 @@ try:
         print_to_stdout(f"{del_command} - rowcount={cursor3.rowcount}")
         # print_to_stdout(f"{txt} - messages={cursor2.messages}")
         conn3.commit()
-        im2='''insert into Plex.accounting_balance_update_period_range (pcn,period_start,period_end,open_period)  
-                values (%s,%s,%s,%s)''' 
+        im2='''insert into Plex.accounting_balance_update_period_range (pcn,period_start,period_end,open_period,no_update)  
+                values (%s,%s,%s,%s,0)''' 
         cursor3.executemany(im2,insertObject)
         # cursor2.executemany(im2,records_to_insert)
         conn3.commit()

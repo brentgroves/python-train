@@ -1,15 +1,18 @@
 #!/miniconda/bin/python
 
-#!/miniconda/bin/python
-#!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python
 #!/miniconda/bin/python # for docker image
+#!/miniconda/bin/python
 #!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python # for debugging
+#!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python
 # https://docs.python-zeep.org/en/master/
 import pyodbc 
 from datetime import datetime
-import sys 
+# importing date class from datetime module
+from datetime import date
 import mysql.connector
 from mysql.connector import Error
+
+import sys 
 # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-3-proof-of-concept-connecting-to-sql-using-pyodbc?view=sql-server-ver16
 # https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/programming-guidelines?view=sql-server-ver16
 # remember to source oaodbc64.sh to set env variables.
@@ -37,13 +40,17 @@ try:
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
 
-    params = '123681,300758,310507,306766,300757'
+    params = '123681,300758'
     username = 'mg.odbcalbion'
     password = 'Mob3xalbion'
+    # username = 'MGAlbionReportsws@plex.com' DOES NOT WORK
+    # password = '697fd42-084c-'
     username2 = 'mgadmin'
     password2 = 'WeDontSharePasswords1!'
     username3 = 'root'
     password3 = 'password'
+
+   
     # print(f"params={params}")
     # print(f"params={params},username={username},password={password},username2={username2},password2={password2}")
     # sys.exit(0)
@@ -59,26 +66,34 @@ try:
     conn = pyodbc.connect('DSN=Plex;UID='+username+';PWD='+ password)
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
     cursor = conn.cursor()
-    
-    # cursor.execute("{call sproc300758_11728751_2001163 (?)}", params)
-    cursor.execute("{call sproc300758_11728751_2059406 (?)}", params)
+    rowcount=cursor.execute("{call sproc300758_11728751_1999909 (?)}", params).rowcount
     rows = cursor.fetchall()
+    print_to_stdout(f"call sproc300758_11728751_1999909 - rowcount={cursor.rowcount}")
+    print_to_stdout(f"call sproc300758_11728751_1999909 - messages={cursor.messages}")
     cursor.close()
     fetch_time = datetime.now()
     tdelta = fetch_time - start_time 
     print_to_stdout(f"fetch_time={tdelta}") 
 
+    insertObject = []
+    # columnNames = [column[0] for column in cursor.description]
+    for record in rows:
+      insertObject.append(tuple(record))
 
     conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw')
 
     cursor2 = conn2.cursor()
+    # creating the date object of today's date
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    del_command = f"delete from Plex.accounting_period where pcn in ({params})"
-    # del_command = f"delete from Scratch.accounting_period where pcn in ({params})"
+    todays_date = date.today()
+    del_command = f"delete from Plex.accounting_account_year_category_type where [year] = {todays_date.year} and pcn in ({params})"
+    # del_command = f"delete from Scratch.accounting_account_year_category_type where [year] = {todays_date.year} and pcn in ({params})"
+    # print_to_stdout(del_command)
 
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # The return value is always the cursor itself:
     rowcount=cursor2.execute(del_command).rowcount
+    # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
     print_to_stdout(f"{del_command} - rowcount={rowcount}")
     print_to_stdout(f"{del_command} - messages={cursor2.messages}")
     cursor2.commit()
@@ -86,44 +101,19 @@ try:
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
     # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-    im2='''insert into Plex.accounting_period (pcn,period_key,period,period_display,fiscal_order,quarter_group,begin_date,end_date,period_status,add_date,update_date) 
-            values (?,?,?,?,?,?,?,?,?,?,?)''' 
-    # im2='''insert into Scratch.accounting_period (pcn,period_key,period,period_display,fiscal_order,quarter_group,begin_date,end_date,period_status,add_date,update_date) 
-    #         values (?,?,?,?,?,?,?,?,?,?,?)''' 
+    im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,[year],category_type,revenue_or_expense) 
+    values (?,?,?,?,?)''' 
+    # im2='''insert into Scratch.accounting_account_year_category_type (pcn,account_no,[year],category_type,revenue_or_expense) 
+    # values (?,?,?,?,?)''' 
+    # values(123681,10000-000-00000,2022,'Asset',0)
 
-    length = len(rows)
-    i = 0
-    print(f"length={length}")
-    f = '%Y-%m-%d %H:%M:%S.%f'
-    # Convert Plex format to datetime with 3 precision second decimal
-    # If DW column was datetime2 no conversion would be necessary
-    while i < length:
-        if(rows[i][9] is not None):
-            r9=rows[i][9]
-            # print(f"period_key={rows[i][1]}len={len(r9)},r9={r9}")
-            if(len(r9)==19):
-                ts=r9+'.000'
-            else:        
-                ts=r9[:-6]
-            # print(f"len={len(ts)},ts={ts}")
-            rows[i][9]=ts
-            # dt=datetime.strptime(ts, f)
-            # et=dt.strftime("%f")[:-3]
-            # st=dt.strftime("%Y-%m-%d %H:%M:%S")
-            # rows[i][9]=st+'.'+et
-            # print(f"i={i},st={st},et={et}")
-        i += 1
-        #    2022-05-10 00:07:21.000
+    # rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
     cursor2.fast_executemany = True
     cursor2.executemany(im2,rows)
-    # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
     cursor2.commit()
     cursor2.close()
 
-    insertObject = []
-    # columnNames = [column[0] for column in cursor.description]
-    for record in rows:
-      insertObject.append(tuple(record))
+    # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
 
     conn3 = mysql.connector.connect(user=username3, password=password3,
                               host='10.1.0.116',
@@ -133,8 +123,9 @@ try:
     cursor3 = conn3.cursor()
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
     # txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
-    del_command = f"delete from Plex.accounting_period where pcn in ({params})"
+    del_command = f"delete from Plex.accounting_account_year_category_type where year = {todays_date.year} and pcn in ({params})"
 
+    # txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # The return value is always the cursor itself:
     cursor3.execute(del_command)
@@ -143,9 +134,9 @@ try:
     # print_to_stdout(f"{txt} - messages={cursor2.messages}")
     conn3.commit()
 
-    im2='''insert into Plex.accounting_period (pcn,period_key,period,period_display,fiscal_order,quarter_group,begin_date,end_date,period_status,add_date,update_date) 
-            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''' 
-   
+    im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,`year`,category_type,revenue_or_expense)
+    values (%s,%s,%s,%s,%s)''' 
+
     cursor3.executemany(im2,insertObject)
     # cursor2.executemany(im2,records_to_insert)
     conn3.commit()
@@ -154,14 +145,11 @@ try:
 except pyodbc.Error as ex:
     ret = 1
     error_msg = ex.args[1]
-    print_to_stderr(f"error {error_msg}") 
-    print_to_stderr(f"error {ex.args}") 
+    print_to_stderr(error_msg) 
 
 except Error as e:
+    ret = 1
     print("MySQL error: ", e)
-
-except BaseException as error:
-    print('An exception occurred: {}'.format(error))
 
 finally:
     end_time = datetime.now()

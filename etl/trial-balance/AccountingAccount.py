@@ -60,7 +60,7 @@ try:
 
     # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development?view=sql-server-ver15
     # password = 'wrong' 
-    conn = pyodbc.connect('DSN=Plex;UID='+username+';PWD='+ password)
+    conn = pyodbc.connect('DSN=Test;UID='+username+';PWD='+ password)
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
     cursor = conn.cursor()
     cursor.execute("{call sproc300758_11728751_1978024 (?)}", params)
