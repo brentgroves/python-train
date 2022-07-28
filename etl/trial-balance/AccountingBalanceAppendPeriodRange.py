@@ -38,7 +38,7 @@ try:
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
 
-    params = '123681,300758'
+    pcn = '123681'
     username = 'mg.odbcalbion'
     password = 'Mob3xalbion'
     username2 = 'mgadmin'
@@ -56,13 +56,25 @@ try:
     current_time = start_time.strftime("%H:%M:%S")
     print_to_stdout(f"Current Time: {current_time=}")
 
+    conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw')
+
+    cursor2 = conn2.cursor()
+    # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
+    rowcount=cursor2.execute("{call Plex.accounting_balance_get_period_range}").rowcount
+    # rowcount=cursor2.execute("{call Scratch.accounting_balance_delete_period_range}").rowcount
+    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
+    # The return value is always the cursor itself:
+    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - rowcount={rowcount}")
+    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - messages={cursor2.messages}")
+
+
     # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development?view=sql-server-ver15
     # password = 'wrong' 
     conn = pyodbc.connect('DSN=Plex;UID='+username+';PWD='+ password)
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
     cursor = conn.cursor()
     
-    rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?)}", params).rowcount
+    rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?)}", pcn).rowcount
     rows = cursor.fetchall()
     print_to_stdout(f"call sproc300758_11728751_2000117 - rowcount={rowcount}")
     print_to_stdout(f"call sproc300758_11728751_2000117 - messages={cursor.messages}")
