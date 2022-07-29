@@ -42,6 +42,10 @@ try:
     SELECT @period_start_out AS period_start, @period_end_out as period_end;
     """
     cursor2.execute(tsql, (123681))
+    # other legit formats
+    # rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?,?,?)}", pcn,period_start,period_end).rowcount
+    # rowcount=cursor2.execute("{call Plex.account_period_balance_delete_period_range (?)}",pcn).rowcount
+
     row = cursor2.fetchone()
     period_start = row[0];
     period_end= row[1]

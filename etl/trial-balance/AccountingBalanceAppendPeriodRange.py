@@ -30,7 +30,7 @@ def print_to_stderr(*a):
 
 try:
     ret = 0
-    # params = (sys.argv[1])
+    # pcn = (sys.argv[1])
     # username = (sys.argv[2])
     # password = (sys.argv[3])
     # username2 = (sys.argv[4])
@@ -38,7 +38,8 @@ try:
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
 
-    pcn = '123681'
+    pcn = '300758'
+    # pcn = '123681'
     username = 'mg.odbcalbion'
     password = 'Mob3xalbion'
     username2 = 'mgadmin'
@@ -56,86 +57,94 @@ try:
     current_time = start_time.strftime("%H:%M:%S")
     print_to_stdout(f"Current Time: {current_time=}")
 
-    conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw')
-
-    cursor2 = conn2.cursor()
-    # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    rowcount=cursor2.execute("{call Plex.accounting_balance_get_period_range}").rowcount
-    # rowcount=cursor2.execute("{call Scratch.accounting_balance_delete_period_range}").rowcount
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # The return value is always the cursor itself:
-    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - rowcount={rowcount}")
-    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - messages={cursor2.messages}")
-
-
-    # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development?view=sql-server-ver15
-    # password = 'wrong' 
-    conn = pyodbc.connect('DSN=Plex;UID='+username+';PWD='+ password)
-    # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
-    cursor = conn.cursor()
-    
-    rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?)}", pcn).rowcount
-    rows = cursor.fetchall()
-    print_to_stdout(f"call sproc300758_11728751_2000117 - rowcount={rowcount}")
-    print_to_stdout(f"call sproc300758_11728751_2000117 - messages={cursor.messages}")
-
-    cursor.close()
-    fetch_time = datetime.now()
-    tdelta = fetch_time - start_time 
-    print_to_stdout(f"fetch_time={tdelta}") 
-
-    conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw')
-
-    cursor2 = conn2.cursor()
-    # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    rowcount=cursor2.execute("{call Plex.accounting_balance_delete_period_range}").rowcount
-    # rowcount=cursor2.execute("{call Scratch.accounting_balance_delete_period_range}").rowcount
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # The return value is always the cursor itself:
-    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - rowcount={rowcount}")
-    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - messages={cursor2.messages}")
-
-    cursor2.commit()
-
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
-    # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-
-    im2 = '''INSERT INTO Plex.accounting_balance (pcn, account_key, account_no, period, debit, credit, balance)
-            VALUES(?, ?, ?, ?, ?, ?, ?);'''
-    # im2 = '''INSERT INTO Scratch.accounting_balance (pcn, account_key, account_no, period, debit, credit, balance)
-    #         VALUES(?, ?, ?, ?, ?, ?, ?);'''
-
-
-    cursor2.fast_executemany = True
-    cursor2.executemany(im2,rows)
-    cursor2.commit()
-    cursor2.close()
-
-    insertObject = []
-    # columnNames = [column[0] for column in cursor.description]
-    for record in rows:
-        insertObject.append(tuple(record))
-
     conn3 = mysql.connector.connect(user=username3, password=password3,
                             host='10.1.0.116',
                             port='31008',
                             database='Plex')
 
     cursor3 = conn3.cursor()
-    # cursor2.callproc('get_laptop', [1, ])
-    cursor3.callproc('accounting_balance_delete_period_range', [])
-    # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-    print_to_stdout(f"call Plex.accounting_balance_delete_period_range - rowcount={cursor3.rowcount}")
-    # print_to_stdout(f"{txt} - messages={cursor2.messages}")
-    conn3.commit()
+    period_start = 0
+    period_end = 0
+    no_update = 9
+    # The parameters are needed in the call but the output params are not changed but are in result_args.
+    result_args =cursor3.callproc('accounting_balance_get_period_range', [pcn,period_start,period_end,no_update])
+    # result_args =cursor3.callproc('accounting_balance_get_period_range', [123681,period_start2,period_end2])
+    #  https://www.mysqltutorial.org/calling-mysql-stored-procedures-python/
+    period_start = result_args[1] #param 2
+    period_end = result_args[2] #param 3
+    no_update = result_args[3] #param 4
+    # print(f"PLSQL: period_start={result_args[1]} period_end={result_args[2]}")
 
-    im2 = '''INSERT INTO Plex.accounting_balance (pcn, account_key, account_no, period, debit, credit, balance)
-            VALUES(%s,%s,%s,%s,%s,%s,%s);'''
-    cursor3.executemany(im2,insertObject)
-    # cursor2.executemany(im2,records_to_insert)
-    conn3.commit()
-    cursor3.close()
+    if no_update != 1:
+
+        # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development?view=sql-server-ver15
+        # password = 'wrong' 
+        conn = pyodbc.connect('DSN=Plex;UID='+username+';PWD='+ password)
+        # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
+        cursor = conn.cursor()
+    
+        rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?,?,?)}", pcn,period_start,period_end).rowcount
+        rows = cursor.fetchall()
+        print_to_stdout(f"call sproc300758_11728751_2000117 - rowcount={rowcount}")
+        print_to_stdout(f"call sproc300758_11728751_2000117 - messages={cursor.messages}")
+
+        cursor.close()
+        fetch_time = datetime.now()
+        tdelta = fetch_time - start_time 
+        print_to_stdout(f"fetch_time={tdelta}") 
+
+        conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw')
+        cursor2 = conn2.cursor()
+
+        tsql = """\
+        EXEC Plex.accounting_balance_delete_period_range @pcn = ?;
+        """
+        cursor2.execute(tsql, (pcn)).rowcount
+
+        # cursor2 = conn2.cursor()
+        # # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
+        # rowcount=cursor2.execute("{call Plex.accounting_balance_delete_period_range}").rowcount
+        # rowcount=cursor2.execute("{call Scratch.accounting_balance_delete_period_range}").rowcount
+        # https://github.com/mkleehammer/pyodbc/wiki/Cursor
+        # The return value is always the cursor itself:
+        print_to_stdout(f"call Plex.accounting_balance_delete_period_range - rowcount={rowcount}")
+        print_to_stdout(f"call Plex.accounting_balance_delete_period_range - messages={cursor2.messages}")
+
+        cursor2.commit()
+
+        # https://github.com/mkleehammer/pyodbc/wiki/Cursor
+        # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
+        # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
+
+        im2 = '''INSERT INTO Plex.accounting_balance (pcn, account_key, account_no, period, debit, credit, balance)
+                VALUES(?, ?, ?, ?, ?, ?, ?);'''
+        # im2 = '''INSERT INTO Scratch.accounting_balance (pcn, account_key, account_no, period, debit, credit, balance)
+        #         VALUES(?, ?, ?, ?, ?, ?, ?);'''
+
+
+        cursor2.fast_executemany = True
+        cursor2.executemany(im2,rows)
+        cursor2.commit()
+        cursor2.close()
+
+        insertObject = []
+        # columnNames = [column[0] for column in cursor.description]
+        for record in rows:
+            insertObject.append(tuple(record))
+
+        # cursor2.callproc('get_laptop', [1, ])
+        cursor3.callproc('accounting_balance_delete_period_range', [pcn])
+        # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
+        print_to_stdout(f"call Plex.accounting_balance_delete_period_range - rowcount={cursor3.rowcount}")
+        # print_to_stdout(f"{txt} - messages={cursor2.messages}")
+        conn3.commit()
+
+        im2 = '''INSERT INTO Plex.accounting_balance (pcn, account_key, account_no, period, debit, credit, balance)
+                VALUES(%s,%s,%s,%s,%s,%s,%s);'''
+        cursor3.executemany(im2,insertObject)
+        # cursor2.executemany(im2,records_to_insert)
+        conn3.commit()
+        cursor3.close()
 
     # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
 except pyodbc.Error as ex:

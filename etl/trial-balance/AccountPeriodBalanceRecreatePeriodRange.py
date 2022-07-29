@@ -33,14 +33,17 @@ def print_to_stderr(*a):
 
 try:
     ret = 0
-    # username2 = (sys.argv[1])
-    # password2 = (sys.argv[2])
-    # username3 = (sys.argv[3])
-    # password3 = (sys.argv[4])
-    username2 = 'mgadmin' 
-    password2 = 'WeDontSharePasswords1!' 
+    # pcn = (sys.argv[1])
+    # username2 = (sys.argv[2])
+    # password2 = (sys.argv[3])
+    # username3 = (sys.argv[4])
+    # password3 = (sys.argv[5])
+
+    pcn = '123681'
+    username2 = 'mgadmin'
+    password2 = 'WeDontSharePasswords1!'
     username3 = 'root'
-    password3 = 'password'
+    password3 = 'password'   
 
     # params = (sys.argv[1])
     # username = (sys.argv[2])
@@ -56,40 +59,53 @@ try:
 
     current_time = start_time.strftime("%H:%M:%S")
     print_to_stdout(f"Current Time: {current_time=}")
-    # https://www.pythonfixing.com/2022/02/fixed-how-to-set-db-connection-timeout.html
-    conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw',timeout=30)
-    # conn2.timeout = 10
-    # conn2.autocommit = True
-    cursor2 = conn2.cursor()
-    # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    rowcount=cursor2.execute("{call Plex.account_period_balance_recreate_period_range}").rowcount
-
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # The return value is always the cursor itself:
-    print_to_stdout(f"call Plex.account_period_balance_recreate_period_range - rowcount={rowcount}")
-    print_to_stdout(f"call Plex.account_period_balance_recreate_period_range - messages={cursor2.messages}")
-    cursor2.commit()
-    cursor2.close()
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
-    # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-
-    # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-
 
     conn3 = mysql.connector.connect(user=username3, password=password3,
-                              host='10.1.0.116',
-                              port='31008',
-                              database='Plex')
+                        host='10.1.0.116',
+                        port='31008',
+                        database='Plex')
 
     cursor3 = conn3.cursor()
-    # cursor2.callproc('get_laptop', [1, ])
-    cursor3.callproc('account_period_balance_recreate_period_range', [])
-    # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-    print_to_stdout(f"call Plex.account_period_balance_recreate_period_range() - rowcount={cursor3.rowcount}")
-    # print_to_stdout(f"{txt} - messages={cursor2.messages}")
-    conn3.commit()
-    cursor3.close()
+    period_start = 0
+    period_end = 0
+    no_update = 9
+    # The parameters are needed in the call but the output params are not changed but are in result_args.
+    result_args =cursor3.callproc('accounting_balance_get_period_range', [pcn,period_start,period_end,no_update])
+    # result_args =cursor3.callproc('accounting_balance_get_period_range', [123681,period_start2,period_end2])
+    #  https://www.mysqltutorial.org/calling-mysql-stored-procedures-python/
+    period_start = result_args[1] #param 2
+    period_end = result_args[2] #param 3
+    no_update = result_args[3] #param 4
+    # print(f"PLSQL: period_start={result_args[1]} period_end={result_args[2]}")
+
+    if no_update != 1:
+        # https://www.pythonfixing.com/2022/02/fixed-how-to-set-db-connection-timeout.html
+        conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw',timeout=30)
+        # conn2.timeout = 10
+        # conn2.autocommit = True
+        cursor2 = conn2.cursor()
+        # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
+        rowcount=cursor2.execute("{call Plex.account_period_balance_recreate_period_range (?)}",pcn).rowcount
+
+        # https://github.com/mkleehammer/pyodbc/wiki/Cursor
+        # The return value is always the cursor itself:
+        print_to_stdout(f"call Plex.account_period_balance_recreate_period_range - rowcount={rowcount}")
+        print_to_stdout(f"call Plex.account_period_balance_recreate_period_range - messages={cursor2.messages}")
+        cursor2.commit()
+        cursor2.close()
+        # https://github.com/mkleehammer/pyodbc/wiki/Cursor
+        # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
+        # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
+
+        # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
+
+
+        cursor3.callproc('account_period_balance_recreate_period_range', [pcn])
+        # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
+        print_to_stdout(f"call Plex.account_period_balance_recreate_period_range() - rowcount={cursor3.rowcount}")
+        # print_to_stdout(f"{txt} - messages={cursor2.messages}")
+        conn3.commit()
+        cursor3.close()
 
 
 except pyodbc.Error as ex:
