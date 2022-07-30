@@ -38,8 +38,8 @@ try:
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
 
-    pcn = '300758'
-    # pcn = '123681'
+    # pcn = '300758'
+    pcn = '123681'
     username = 'mg.odbcalbion'
     password = 'Mob3xalbion'
     username2 = 'mgadmin'
@@ -83,6 +83,7 @@ try:
         # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
         cursor = conn.cursor()
     
+        # accounting_balance_append_period_range_dw_import
         rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?,?,?)}", pcn,period_start,period_end).rowcount
         rows = cursor.fetchall()
         print_to_stdout(f"call sproc300758_11728751_2000117 - rowcount={rowcount}")

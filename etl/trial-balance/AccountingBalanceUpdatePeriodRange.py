@@ -60,6 +60,8 @@ try:
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
     cursor = conn.cursor()
     
+    # accounting_balance_update_period_range_dw_import
+    # period range is min open period to year before it
     rowcount=cursor.execute("{call sproc300758_11728751_1999565 (?)}", params)
     rows = cursor.fetchall()
     print_to_stdout(f"call sproc300758_11728751_1999565 - rowcount={rowcount}")

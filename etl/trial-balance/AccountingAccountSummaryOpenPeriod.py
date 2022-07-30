@@ -68,6 +68,8 @@ try:
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
     cursor = conn.cursor()
     # AccountingAccountSummaryOpenPeriod_DW_Import
+    # Open period determined by Plex 
+    # from accounting_balance_update_period_range_dw_import/sproc300758_11728751_1999565;
     cursor.execute("{call sproc123681_11728751_2087993(?)}", PCNList)
     rows = cursor.fetchall()
 
