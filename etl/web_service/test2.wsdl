@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GetTemplateResult xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.plexus-online.com/DataSource">
+  <StatusNo>0</StatusNo>
+  <Error>false</Error>
+  <ErrorNo>0</ErrorNo>
+  <Message />
+  <InstanceNo>16574</InstanceNo>
+  <ExecuteDataSourceRequest xmlns="http://www.plexus-online.com/DataSource">
+    <DataSourceKey>4814</DataSourceKey>
+    <InputParameters>
+      <InputParameter>
+        <Value>VARCHAR, max length 2000</Value>
+        <Name>@PCNs</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>INT</Value>
+        <Name>@Period_Start</Name>
+        <Required>true</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>INT</Value>
+        <Name>@Period_End</Name>
+        <Required>true</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>VARCHAR, max length 20</Value>
+        <Name>@Account_No_From</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>VARCHAR, max length 20</Value>
+        <Name>@Account_No_To</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>INT</Value>
+        <Name>@Exclude_Zeros</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>BIT</Value>
+        <Name>@Alternate_Format</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>INT</Value>
+        <Name>@Booked</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>BIT</Value>
+        <Name>@Exclude_Period_13</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>BIT</Value>
+        <Name>@Exclude_Period_Adjustments</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>VARCHAR, max length 20</Value>
+        <Name>@Base_No_From</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>VARCHAR, max length 20</Value>
+        <Name>@Base_No_To</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+      <InputParameter>
+        <Value>BIT</Value>
+        <Name>@Active</Name>
+        <Required>false</Required>
+        <Output>false</Output>
+      </InputParameter>
+    </InputParameters>
+    <DataSourceName>Account_Activity_Summary_xPCN_Get</DataSourceName>
+  </ExecuteDataSourceRequest>
+  <ResultSets>
+    <ResultSet>
+      <RowCount>1</RowCount>
+      <Rows>
+        <Row>
+          <Columns>
+            <Column>
+              <Value>STRING, max length 10</Value>
+              <Name>Base_No</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 20</Value>
+              <Name>Account_No</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 10</Value>
+              <Name>Abbreviated_Name</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 110</Value>
+              <Name>Account_Name</Name>
+            </Column>
+            <Column>
+              <Value>NUMERIC</Value>
+              <Name>Beginning_Balance</Name>
+            </Column>
+            <Column>
+              <Value>NUMERIC</Value>
+              <Name>Debit</Name>
+            </Column>
+            <Column>
+              <Value>NUMERIC</Value>
+              <Name>Credit</Name>
+            </Column>
+            <Column>
+              <Value>NUMERIC</Value>
+              <Name>Ending_Balance</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 50</Value>
+              <Name>PCN_Name</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 3</Value>
+              <Name>Report_Currency</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 10</Value>
+              <Name>Cost_Center_No</Name>
+            </Column>
+            <Column>
+              <Value>STRING, max length 5</Value>
+              <Name>Location_No</Name>
+            </Column>
+          </Columns>
+        </Row>
+      </Rows>
+    </ResultSet>
+  </ResultSets>
+</GetTemplateResult>
