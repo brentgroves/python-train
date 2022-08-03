@@ -30,11 +30,15 @@ def print_to_stderr(*a):
 try:
   ret = 0
   # pcn = (sys.argv[1])
-  # username = (sys.argv[2])
-  # password = (sys.argv[3])
-  # username2 = (sys.argv[4])
-  # password2 = (sys.argv[5])
-  pcn = '123681'
+  # username2 = (sys.argv[2])
+  # password2 = (sys.argv[3])
+  # username3 = (sys.argv[4])
+  # password3 = (sys.argv[5])
+  # username4 = (sys.argv[6])
+  # password4 = (sys.argv[7])
+
+#   pcn = '123681'
+  pcn = '300758'
   username2 = 'mgadmin' 
   password2 = 'WeDontSharePasswords1!' 
   username3 = 'root'
@@ -75,7 +79,9 @@ try:
   session.auth = HTTPBasicAuth(username4,password4)
   # session.auth = HTTPBasicAuth('MGEdonReportsws@plex.com','9f45e3d-67ed-')
 
-  client = Client(wsdl='Plex_SOAP_prod.wsdl',transport=Transport(session=session))
+  # client = Client(wsdl='../wsdl/Plex_SOAP_prod.wsdl',transport=Transport(session=session)) # ETL-pod
+  client = Client(wsdl='etl/wsdl/Plex_SOAP_prod.wsdl',transport=Transport(session=session)) # python-train
+
   # https://docs.python-zeep.org/en/master/datastructures.html
   e_type = client.get_type('ns0:ExecuteDataSourceRequest')
   a_ip_type = client.get_type('ns0:ArrayOfInputParameter')
