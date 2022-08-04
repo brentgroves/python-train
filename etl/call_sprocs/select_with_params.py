@@ -29,22 +29,22 @@ def print_to_stderr(*a):
     # InterfaceError('IM002', '[IM002] [unixODBC][Driver Manager]Data source name not found and no default driver specified (0) (SQLDriverConnect)')
 try:
   ret = 0
-  # pcn = (sys.argv[1])
-  # username2 = (sys.argv[2])
-  # password2 = (sys.argv[3])
-  # username3 = (sys.argv[4])
-  # password3 = (sys.argv[5])
-  # username4 = (sys.argv[6])
-  # password4 = (sys.argv[7])
+  pcn = (sys.argv[1])
+  username2 = (sys.argv[2])
+  password2 = (sys.argv[3])
+  username3 = (sys.argv[4])
+  password3 = (sys.argv[5])
+  username4 = (sys.argv[6])
+  password4 = (sys.argv[7])
 
 #   pcn = '123681'
-  pcn = '300758'
-  username2 = 'mgadmin' 
-  password2 = 'WeDontSharePasswords1!' 
-  username3 = 'root'
-  password3 = 'password'
-  username4 = 'MGEdonReportsws@plex.com'
-  password4 = '9f45e3d-67ed-'
+  # pcn = '300758'
+  # username2 = 'mgadmin' 
+  # password2 = 'WeDontSharePasswords1!' 
+  # username3 = 'root'
+  # password3 = 'password'
+  # username4 = 'MGEdonReportsws@plex.com'
+  # password4 = '9f45e3d-67ed-'
 
   # https://geekflare.com/calculate-time-difference-in-python/
   start_time = datetime.now()

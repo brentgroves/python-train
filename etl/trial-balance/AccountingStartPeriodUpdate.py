@@ -62,12 +62,12 @@ try:
     # conn2.autocommit = True
     cursor2 = conn2.cursor()
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    rowcount=cursor2.execute("{call Plex.sp_accounting_balance_update_start_period}").rowcount
+    rowcount=cursor2.execute("{call Plex.accounting_start_period_update}").rowcount
 
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # The return value is always the cursor itself:
-    print_to_stdout(f"call Plex.sp_accounting_balance_update_start_period - rowcount={rowcount}")
-    print_to_stdout(f"call Plex.sp_accounting_balance_update_start_period - messages={cursor2.messages}")
+    print_to_stdout(f"call Plex.accounting_start_period_update - rowcount={rowcount}")
+    print_to_stdout(f"call Plex.accounting_start_period_update - messages={cursor2.messages}")
     cursor2.commit()
     cursor2.close()
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
@@ -84,9 +84,9 @@ try:
 
     cursor3 = conn3.cursor()
     # cursor2.callproc('get_laptop', [1, ])
-    cursor3.callproc('sp_accounting_balance_update_start_period', [])
+    cursor3.callproc('accounting_start_period_update', [])
     # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-    print_to_stdout(f"call Plex.sp_accounting_balance_update_start_period() - rowcount={cursor3.rowcount}")
+    print_to_stdout(f"call Plex.accounting_start_period_update() - rowcount={cursor3.rowcount}")
     # print_to_stdout(f"{txt} - messages={cursor2.messages}")
     conn3.commit()
     cursor3.close()

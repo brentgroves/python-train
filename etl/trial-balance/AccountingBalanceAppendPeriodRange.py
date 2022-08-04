@@ -63,19 +63,20 @@ try:
                             database='Plex')
 
     cursor3 = conn3.cursor()
-    period_start = 0
-    period_end = 0
-    open_period = 0
+    start_period = 0
+    end_period = 0
+    start_open_period = 0
+    end_open_period = 0
     no_update = 9
     # The parameters are needed in the call but the output params are not changed but are in result_args.
-    result_args =cursor3.callproc('accounting_balance_get_period_range', [pcn,period_start,period_end,open_period,no_update])
+    result_args =cursor3.callproc('accounting_get_period_ranges', [pcn,start_period,end_period,start_open_period,end_open_period,no_update])
     # result_args =cursor3.callproc('accounting_balance_get_period_range', [123681,period_start2,period_end2])
     #  https://www.mysqltutorial.org/calling-mysql-stored-procedures-python/
-    period_start = result_args[1] #param 2
-    period_end = result_args[2] #param 3
-    # open_period = result_args[3] #param 4
-    no_update = result_args[4] #param 5
-    # print(f"PLSQL: period_start={result_args[1]} period_end={result_args[2]}")
+    start_period = result_args[1] #param 2
+    end_period = result_args[2] #param 3
+    # start_open_period = result_args[3] #param 4
+    # end_open_period = result_args[4] #param 5
+    no_update = result_args[5] #param 6
 
     if no_update != 1:
 
@@ -86,7 +87,7 @@ try:
         cursor = conn.cursor()
     
         # accounting_balance_append_period_range_dw_import
-        rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?,?,?)}", pcn,period_start,period_end).rowcount
+        rowcount=cursor.execute("{call sproc300758_11728751_2000117 (?,?,?)}", pcn,start_period,end_period).rowcount
         rows = cursor.fetchall()
         print_to_stdout(f"call sproc300758_11728751_2000117 - rowcount={rowcount}")
         print_to_stdout(f"call sproc300758_11728751_2000117 - messages={cursor.messages}")
