@@ -37,8 +37,8 @@ try:
   # username4 = (sys.argv[6])
   # password4 = (sys.argv[7])
 
-#   pcn = '123681'
-  pcn = '300758'
+  pcn = '123681'
+  # pcn = '300758'
   username2 = 'mgadmin' 
   password2 = 'WeDontSharePasswords1!' 
   username3 = 'root'
