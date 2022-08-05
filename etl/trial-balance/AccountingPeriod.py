@@ -29,7 +29,7 @@ def print_to_stderr(*a):
 
 try:
     ret = 0
-    # params = (sys.argv[1])
+    # pcn_list = (sys.argv[1])
     # username = (sys.argv[2])
     # password = (sys.argv[3])
     # username2 = (sys.argv[4])
@@ -37,7 +37,8 @@ try:
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
 
-    params = '123681,300758,310507,306766,300757'
+    pcn_list = '123681,300758'
+    # pcn_list = '123681,300758,310507,306766,300757'
     username = 'mg.odbcalbion'
     password = 'Mob3xalbion'
     username2 = 'mgadmin'
@@ -61,7 +62,7 @@ try:
     cursor = conn.cursor()
     
     # cursor.execute("{call sproc300758_11728751_2001163 (?)}", params)
-    cursor.execute("{call sproc300758_11728751_2059406 (?)}", params)
+    cursor.execute("{call sproc300758_11728751_2059406 (?)}", pcn_list)
     rows = cursor.fetchall()
     cursor.close()
     fetch_time = datetime.now()
@@ -74,7 +75,7 @@ try:
     cursor2 = conn2.cursor()
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
     # delete the previous runs values
-    del_command = f"delete from Plex.accounting_period where pcn in ({params}) and ordinal = 0"
+    del_command = f"delete from Plex.accounting_period where pcn in ({pcn_list}) and ordinal = 0"
     # del_command = f"delete from Scratch.accounting_period where pcn in ({params})"
 
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
@@ -85,7 +86,7 @@ try:
     cursor2.commit()
 
     # set the newest records to the previous records.
-    update_command = f"update Plex.accounting_period set ordinal=0 where pcn in ({params}) and ordinal = 1"
+    update_command = f"update Plex.accounting_period set ordinal=0 where pcn in ({pcn_list}) and ordinal = 1"
     rowcount=cursor2.execute(update_command).rowcount
     print_to_stdout(f"{update_command} - rowcount={rowcount}")
     print_to_stdout(f"{update_command} - messages={cursor2.messages}")
@@ -144,7 +145,7 @@ try:
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
     # txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
     # delete the previous runs values
-    del_command = f"delete from Plex.accounting_period where pcn in ({params}) and ordinal = 0"
+    del_command = f"delete from Plex.accounting_period where pcn in ({pcn_list}) and ordinal = 0"
 
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # The return value is always the cursor itself:
@@ -155,7 +156,7 @@ try:
     conn3.commit()
 
     # set the newest records to the previous records.
-    update_command = f"update Plex.accounting_period set ordinal=0 where pcn in ({params}) and ordinal = 1"
+    update_command = f"update Plex.accounting_period set ordinal=0 where pcn in ({pcn_list}) and ordinal = 1"
     cursor3.execute(update_command)
     # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
     print_to_stdout(f"{update_command} - rowcount={cursor3.rowcount}")

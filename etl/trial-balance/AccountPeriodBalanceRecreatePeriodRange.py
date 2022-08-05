@@ -45,14 +45,6 @@ try:
     username3 = 'root'
     password3 = 'password'   
 
-    # params = (sys.argv[1])
-    # username = (sys.argv[2])
-    # password = (sys.argv[3])
-    # username2 = (sys.argv[4])
-    # password2 = (sys.argv[5])
-    # print(f"params={params}")
-    # print(f"params={params},username={username},password={password},username2={username2},password2={password2}")
-    # sys.exit(0)
     # https://geekflare.com/calculate-time-difference-in-python/
     start_time = datetime.now()
     end_time = datetime.now()

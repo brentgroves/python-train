@@ -30,7 +30,18 @@ def print_to_stderr(*a):
 
 try:
     ret = 0
-    # pcn_list = (sys.argv[1])
+    pcn_list = '123681,300758'
+    # pcn_list = '123681,300758,310507,306766,300757'
+    username = 'mg.odbcalbion'
+    password = 'Mob3xalbion'
+    # username = 'MGAlbionReportsws@plex.com' DOES NOT WORK
+    # password = '697fd42-084c-'
+    username2 = 'mgadmin'
+    password2 = 'WeDontSharePasswords1!'
+    username3 = 'root'
+    password3 = 'password'
+
+    # params = (sys.argv[1])
     # username = (sys.argv[2])
     # password = (sys.argv[3])
     # username2 = (sys.argv[4])
@@ -38,15 +49,9 @@ try:
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
 
-    pcn_list = '123681,300758'
-    # pcn_list = '123681,300758,310507,306766,300757'
-    username = 'mg.odbcalbion'
-    password = 'Mob3xalbion'
-    username2 = 'mgadmin'
-    password2 = 'WeDontSharePasswords1!'
-    username3 = 'root'
-    password3 = 'password'
-
+    # print(f"params={params}")
+    # print(f"params={params},username={username},password={password},username2={username2},password2={password2}")
+    # sys.exit(0)
     # https://geekflare.com/calculate-time-difference-in-python/
     start_time = datetime.now()
     end_time = datetime.now()
@@ -131,7 +136,7 @@ try:
     txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # The return value is always the cursor itself:
-    cursor3.execute(txt.format(dellist = pcn_list))
+    cursor3.execute(txt.format(dellist = params))
     # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
     print_to_stdout(f"{txt} - rowcount={cursor3.rowcount}")
     # print_to_stdout(f"{txt} - messages={cursor2.messages}")
