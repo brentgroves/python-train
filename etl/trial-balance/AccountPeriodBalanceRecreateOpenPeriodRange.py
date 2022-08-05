@@ -56,17 +56,17 @@ try:
 
     
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    rowcount=cursor2.execute("{call Plex.account_period_balance_delete_open_period (?)}",pcn).rowcount
-    print_to_stdout(f"call Plex.account_period_balance_delete_open_period - rowcount={rowcount}")
-    print_to_stdout(f"call Plex.account_period_balance_delete_open_period - messages={cursor2.messages}")
+    rowcount=cursor2.execute("{call Plex.account_period_balance_delete_open_period_range (?)}",pcn).rowcount
+    print_to_stdout(f"call Plex.account_period_balance_delete_open_period_range - rowcount={rowcount}")
+    print_to_stdout(f"call Plex.account_period_balance_delete_open_period_range - messages={cursor2.messages}")
     cursor2.commit()
 
-    rowcount=cursor2.execute("{call Plex.account_period_balance_recreate_open_period (?)}",pcn).rowcount
+    rowcount=cursor2.execute("{call Plex.account_period_balance_recreate_open_period_range (?)}",pcn).rowcount
 
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # The return value is always the cursor itself:
-    print_to_stdout(f"call Plex.account_period_balance_recreate_open_period - rowcount={rowcount}")
-    print_to_stdout(f"call Plex.account_period_balance_recreate_open_period - messages={cursor2.messages}")
+    print_to_stdout(f"call Plex.account_period_balance_recreate_open_period_range - rowcount={rowcount}")
+    print_to_stdout(f"call Plex.account_period_balance_recreate_open_period_range - messages={cursor2.messages}")
     cursor2.commit()
     cursor2.close()
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
@@ -81,15 +81,15 @@ try:
 
     cursor3 = conn3.cursor()
 
-    cursor3.callproc('account_period_balance_delete_open_period', [pcn])
+    cursor3.callproc('account_period_balance_delete_open_period_range', [pcn])
     # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-    print_to_stdout(f"call Plex.account_period_balance_delete_open_period({pcn}) - rowcount={cursor3.rowcount}")
+    print_to_stdout(f"call Plex.account_period_balance_delete_open_period_range({pcn}) - rowcount={cursor3.rowcount}")
     # print_to_stdout(f"{txt} - messages={cursor2.messages}")
     conn3.commit()
 
-    cursor3.callproc('account_period_balance_recreate_open_period', [pcn])
+    cursor3.callproc('account_period_balance_recreate_open_period_range', [pcn])
     # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-    print_to_stdout(f"call Plex.account_period_balance_append_open_period({pcn}) - rowcount={cursor3.rowcount}")
+    print_to_stdout(f"call Plex.account_period_balance_append_open_period_range({pcn}) - rowcount={cursor3.rowcount}")
     # print_to_stdout(f"{txt} - messages={cursor2.messages}")
     conn3.commit()
     cursor3.close()

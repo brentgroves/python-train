@@ -87,11 +87,10 @@ try:
     # creating the date object of today's date
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
     todays_date = date.today()
-    this_year = todays_date.year
-    next_year = todays_date.year + 1
     del_command = f'''delete from Plex.accounting_account_year_category_type 
-    where year between {this_year} and {next_year} 
+    between {todays_date.year} and {todays_date.year + 1} 
     and pcn in ({pcn_list})'''
+
     # del_command = f"delete from Plex.accounting_account_year_category_type where [year] = {todays_date.year} and pcn in ({params})"
     # del_command = f"delete from Scratch.accounting_account_year_category_type where [year] = {todays_date.year} and pcn in ({params})"
     # print_to_stdout(del_command)
@@ -107,21 +106,20 @@ try:
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
     # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
     # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-    im2=f'''insert into Plex.accounting_account_year_category_type (pcn,account_no,[year],category_type,revenue_or_expense) 
-    values (?,?,{this_year},?,?)''' 
+    im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,[year],category_type,revenue_or_expense) 
+    values (?,?,?,?,?)''' 
 
     # rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
     cursor2.fast_executemany = True
-    cursor2.executemany(im2,insertObject)
-    # cursor2.executemany(im2,rows)
+    cursor2.executemany(im2,rows)
     cursor2.commit()
 
-    im2=f'''insert into Plex.accounting_account_year_category_type (pcn,account_no,[year],category_type,revenue_or_expense) 
-    values (?,?,{next_year},?,?)''' 
+    im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,[year],category_type,revenue_or_expense) 
+    values (?,?,?,?,?)''' 
 
     # rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
     cursor2.fast_executemany = True
-    cursor2.executemany(im2,insertObject)
+    cursor2.executemany(im2,rows)
     cursor2.commit()
 
 
@@ -137,12 +135,7 @@ try:
     cursor3 = conn3.cursor()
     # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
     # txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
-    # del_command = f"delete from Plex.accounting_account_year_category_type where year = {todays_date.year} and pcn in ({params})"
-
-    del_command = f'''delete from Plex.accounting_account_year_category_type 
-    where year between {this_year} and {next_year} 
-    and pcn in ({pcn_list})'''
-
+    del_command = f"delete from Plex.accounting_account_year_category_type where year = {todays_date.year} and pcn in ({params})"
 
     # txt = "delete from Plex.accounting_account where pcn in ({dellist:s})"
     # https://github.com/mkleehammer/pyodbc/wiki/Cursor
@@ -153,19 +146,8 @@ try:
     # print_to_stdout(f"{txt} - messages={cursor2.messages}")
     conn3.commit()
 
-    im2=f'''insert into Plex.accounting_account_year_category_type (pcn,account_no,`year`,category_type,revenue_or_expense)
-    values (%s,%s,{this_year},%s,%s)''' 
-    # im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,`year`,category_type,revenue_or_expense)
-    # values (%s,%s,%s,%s,%s)''' 
-
-    cursor3.executemany(im2,insertObject)
-    # cursor2.executemany(im2,records_to_insert)
-    conn3.commit()
-
-    im2=f'''insert into Plex.accounting_account_year_category_type (pcn,account_no,`year`,category_type,revenue_or_expense)
-    values (%s,%s,{next_year},%s,%s)''' 
-    # im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,`year`,category_type,revenue_or_expense)
-    # values (%s,%s,%s,%s,%s)''' 
+    im2='''insert into Plex.accounting_account_year_category_type (pcn,account_no,`year`,category_type,revenue_or_expense)
+    values (%s,%s,%s,%s,%s)''' 
 
     cursor3.executemany(im2,insertObject)
     # cursor2.executemany(im2,records_to_insert)
