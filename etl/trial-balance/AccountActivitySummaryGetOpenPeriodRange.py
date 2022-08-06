@@ -1,3 +1,10 @@
+#!/miniconda/bin/python
+
+#!/miniconda/bin/python
+#!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python
+#!/miniconda/bin/python # for docker image
+#!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python # for debugging
+
 # https://docs.python-zeep.org/en/master/
 #import xmltodict
 from zeep import Client
