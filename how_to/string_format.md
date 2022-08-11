@@ -1,0 +1,1 @@
+  print_to_stdout(f"delete from Plex.account_activity_summary - rowcount={rowcount}")

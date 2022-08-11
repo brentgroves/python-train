@@ -5,6 +5,7 @@
 #!/miniconda/bin/python # for docker image
 #!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python # for debugging
 
+import string
 import sys
 from datetime import datetime, timedelta
 
@@ -118,7 +119,9 @@ try:
   # print(dic)
   # sys.exit(0)
 
-  report_date=yesterday.strftime("%m/%d/%Y/%m/%d")+'00:00:00'
+
+  report_date=yesterday.strftime("%Y-%m-%d")+' 00:00:00'
+
   # collect desired columns of the result set into a list  
   list = response['ResultSets'].ResultSet[0].Rows.Row
   rec=[]
@@ -126,29 +129,31 @@ try:
   for i in list:
     # balance = float(i.Columns.Column[5].Value)-float(i.Columns.Column[6].Value)
     # str(round(float(i.Columns.Column[5].Value)-float(i.Columns.Column[6].Value),5)),
-    report_date = 
+#     is_nice = True
+# state = "nice" if is_nice else "not nice"
+    if i.Columns.Column[9].Value==None:
+      print(f'none detected {i.Columns.Column[9].Value}')
     rec.append((pcn,report_date,
     i.Columns.Column[5].Value, # workcenter_key
     i.Columns.Column[6].Value, # workcenter_code
     i.Columns.Column[7].Value, # part_key
     i.Columns.Column[8].Value, # part_no 
-    i.Columns.Column[9].Value, # part_revision
+    i.Columns.Column[9].Value if i.Columns.Column[9].Value is not None else '', # part_revision
     i.Columns.Column[10].Value, # part_name
     i.Columns.Column[11].Value, # operation_no
     i.Columns.Column[12].Value, # operation_code 
     i.Columns.Column[15].Value, # parts_produced
     i.Columns.Column[16].Value, # parts_scrapped
     i.Columns.Column[21].Value, # earned hours
-    i.Columns.Column[22].Value, # actual_hours 
+    round(float(i.Columns.Column[22].Value),6), # actual_hours 
+    #  str(round(float(i.Columns.Column[5].Value)-float(i.Columns.Column[6].Value),5)),
     i.Columns.Column[26].Value, # part_operation_key
     i.Columns.Column[27].Value, # quantity_produced
     i.Columns.Column[29].Value, # labor_rate
-    str(round(float(i.Columns.Column[5].Value)-float(i.Columns.Column[6].Value),5)),
-    # i.Columns.Column[5].Value-i.Columns.Column[6].Value,
-    i.Columns.Column[7].Value))
+    ))
     # debug section
-    # print(rec[row])
-    # row=row+1
+    print(rec[row])
+    row=row+1
 
 
   conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw',timeout=30)
@@ -156,44 +161,61 @@ try:
   # conn2.autocommit = True
   cursor2 = conn2.cursor()
 
-  
   # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-  sql = "delete from Plex.account_activity_summary WHERE pcn = ? and period = ?"
-  rowcount=cursor2.execute(sql, (pcn,period)).rowcount
-  print_to_stdout(f"delete from Plex.account_activity_summary - rowcount={rowcount}")
-  print_to_stdout(f"delete from Plex.account_activity_summary - messages={cursor2.messages}")
+  sql ='''
+  delete from DailyMetrics.daily_shift_report
+  WHERE pcn = ? and report_date = ?
+  '''.replace('\n', ' ')
+
+  rowcount=cursor2.execute(sql, (pcn,report_date)).rowcount
+  print_to_stdout(f"{sql} - rowcount={rowcount}")
+  print_to_stdout(f"{sql} - messages={cursor2.messages}")
   cursor2.commit()
 
-  im2 ='''insert into Plex.account_activity_summary (pcn,period,account_no,beginning_balance,debit,credit,balance,ending_balance)
-  values (?,?,?,?,?,?,?,?)'''
+  im2 ='''
+  insert into DailyMetrics.daily_shift_report 
+  (pcn,report_date,workcenter_key,workcenter_code,part_key,part_no,part_revision,
+   part_name,operation_no,operation_code,parts_produced,parts_scrapped,
+   earned_hours,actual_hours,part_operation_key,quantity_produced,labor_rate)
+  values (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?)'''
+
   # test = rec[0:500]
   cursor2.fast_executemany = True
-  cursor2.executemany(im2,rec) 
+  cursor2.executemany(im2,rec[13:14]) 
   cursor2.commit()
+  cursor2.close()
 
-  cursor3.execute(f"delete from Plex.account_activity_summary WHERE pcn = {pcn} and period = {period}")
-  # rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-  print_to_stdout(f"delete from Plex.account_activity_summary - rowcount={cursor3.rowcount}")
-  # print_to_stdout(f"{txt} - messages={cursor2.messages}")
+  conn3 = mysql.connector.connect(user=username3, password=password3,
+                          host='10.1.0.116',
+                          port='31008',
+                          database='Plex')
+
+  cursor3 = conn3.cursor()
+
+  sql ='''
+  delete from DailyMetrics.daily_shift_report
+  WHERE pcn = ? and report_date = ?
+  '''.replace('\n', ' ')
+
+  cursor3.execute(sql,[pcn,report_date])
+  print_to_stdout(f"{sql} - rowcount={cursor3.rowcount}")
   conn3.commit()
 
   # https://github.com/mkleehammer/pyodbc/wiki/Cursor
   # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
   # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
-  im2 ='''insert into Plex.account_activity_summary (pcn,period,account_no,beginning_balance,debit,credit,balance,ending_balance)
-              VALUES (%s,%s,%s,%s,%s,%s,%s,%s) '''
+
+  im2 ='''
+  insert into DailyMetrics.daily_shift_report 
+  (pcn,report_date,workcenter_key,workcenter_code,part_key,part_no,part_revision,
+   part_name,operation_no,operation_code,parts_produced,parts_scrapped,
+   earned_hours,actual_hours,part_operation_key,quantity_produced,labor_rate)
+  values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+  '''.replace('\n',' ')
 
   cursor3.executemany(im2,rec)
   # cursor2.executemany(im2,records_to_insert)
   conn3.commit()
-
-  if (period < max_fiscal_period):
-    period = period + 1
-  else:
-    period = (year+1)*100 + 1
-  # print_to_stdout(f"period={period}")
-
-  cursor2.close()
   cursor3.close()
 
 except pyodbc.Error as ex:
