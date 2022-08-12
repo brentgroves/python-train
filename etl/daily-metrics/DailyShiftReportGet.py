@@ -131,8 +131,8 @@ try:
     # str(round(float(i.Columns.Column[5].Value)-float(i.Columns.Column[6].Value),5)),
 #     is_nice = True
 # state = "nice" if is_nice else "not nice"
-    if i.Columns.Column[9].Value==None:
-      print(f'none detected {i.Columns.Column[9].Value}')
+    # if i.Columns.Column[9].Value==None:
+    #   print(f'none detected {i.Columns.Column[9].Value}')
     rec.append((pcn,report_date,
     i.Columns.Column[5].Value, # workcenter_key
     i.Columns.Column[6].Value, # workcenter_code
