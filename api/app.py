@@ -1,13 +1,77 @@
 # https://flask-restful.readthedocs.io/en/latest/quickstart.html#a-minimal-api
 # https://ch-rowley.github.io/2021/10/24/How-to-marshal-data-with-Flask.html
 # https://marshmallow.readthedocs.io/en/stable/marshmallow.fields.html
+# https://curl.se/docs/manpage.html#-k
+import email
 from flask import Flask, request
 from flask_restful import Resource, abort, Api, reqparse
 from marshmallow import Schema, fields
 from marshmallow import ValidationError
+import trial_balance.parameters  as trial_balance_parameters
+import mean_time_between_failues.parameters as mean_time_between_failures_parameters
+import daily_metrics.parameters as daily_metrics_parameters
+import os
 
 app = Flask(__name__)
 api = Api(app)
+
+# class Parameters(Schema):
+#     report_name = fields.Str(required=True)
+#     email = fields.Email(required=True)
+#     start_period = fields.Int(required=True)
+#     end_period = fields.Int(required=True)
+
+# parameters = Parameters()
+
+class ReportList(Resource):
+# Get
+    # curl http://localhost:5000/report_list
+    def get(self):
+        return "trial_balance,daily_metrics,mean_time_between_failures"
+
+# Thank you, Father for the work that you give us.
+api.add_resource(ReportList, '/report_list')
+
+class Report(Resource):
+# Get
+    # curl http://localhost:5000/report/trial_balance
+    def get(self,report_name):
+        return_value = os.system('ls -l')
+        print(f"return_value={return_value}")
+        # return_value = os.system('ls -l')
+        # print(f"return_value={return_value}")
+        return_value = ''
+        match report_name:
+            case 'trial_balance':
+                return_value = """curl -X POST http://localhost:5000/report -H 'Content-Type: application/json' -d '{"report_name":"trial_balance","email":"username@buschegroup.com","start_period":202201,"end_period":202207}' Please remove all the backslashes and replace username@buschegroup.com with your username.""" 
+            case 'daily_metrics':
+                return_value = """curl -X POST http://localhost:5000/report -H 'Content-Type: application/json' -d '{"report_name":"daily_metrics","email":"username@buschegroup.com","start_period":202201,"end_period":202207}' Please remove all the backslashes and replace username@buschegroup.com with your username."""     
+            case 'mean_time_between_failures':
+                return_value = """curl -X POST http://localhost:5000/report -H 'Content-Type: application/json' -d '{"report_name":"mean_time_between_failures","email":"username@buschegroup.com","start_period":202201,"end_period":202207}' Please remove all the backslashes and replace username@buschegroup.com with your username."""     
+        return return_value
+# Post    
+    # curl -X POST http://localhost:5000/report -H 'Content-Type: application/json' -d '{"report_name":"trial_balance","email":"username@buschegroup.com","start_period":202201,"end_period":202207}'
+    def post(self):
+        parameters = request.get_json()
+        try:
+            report_name=parameters['report_name']
+            match report_name:
+                case 'trial_balance':
+                    parameters_dict = trial_balance_parameters.parameters.load(request.get_json())
+                case 'daily_metrics':
+                    parameters_dict = daily_metrics_parameters.parameters.load(request.get_json())
+                case 'mean_time_between_failures':
+                    parameters_dict = mean_time_between_failures_parameters.parameters.load(request.get_json())
+            # https://janakiev.com/blog/python-shell-commands/
+
+        except ValidationError as err:
+            return err.messages, 422
+        return f"report_name:{parameters_dict['report_name']},email:{parameters_dict['email']},start_period:{parameters_dict['start_period']},end_period:{parameters_dict['end_period']}"
+        # return 'report in progress... email will be sent shortly.' 
+
+# Thank you, Father for the work that you give us.
+api.add_resource(Report, '/report/<string:report_name>','/report')
+
 
 hotels = {}
 hotel_dict = {}
@@ -18,6 +82,8 @@ class HotelSchema(Schema):
     state = fields.Str(required=True)
     rooms = fields.Int(required=True)
     start_date = fields.DateTime()
+
+
 
 
 hotel_schema = HotelSchema()
@@ -58,8 +124,14 @@ class HotelsAPI(Resource):
         return {hotel_id: hotels[hotel_id]}
 # Update
 # curl http://localhost:5000/hotels/1 -d "rooms=3" -X PUT -v
+# For posted form input, use request.form.
+# email = request.form.get('email')
+# https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
+# https://flask.palletsprojects.com/en/2.2.x/api/#flask.Request
     def put(self, hotel_id):
-        hotels[hotel_id] = request.form['data']
+        email = request.form.get('rooms')
+        # hotels[hotel_id] = request.form['data']
+        # hotels[hotel_id] = request.form['data']
         return {hotel_id: hotels[hotel_id]}
 # Delete
 # curl http://localhost:5000/hotel/1 -X DELETE -v

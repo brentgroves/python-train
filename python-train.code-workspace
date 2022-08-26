@@ -4,10 +4,10 @@
 			"path": "."
 		},
 		{
-			"path": "../manim"
+			"path": "../../srcdocker/k8s-train"
 		},
 		{
-			"path": "../conda-env"
+			"path": "../../src/Reporting"
 		}
 	],
 	"settings": {}
