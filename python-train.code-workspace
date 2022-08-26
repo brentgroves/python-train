@@ -4,10 +4,16 @@
 			"path": "."
 		},
 		{
-			"path": "../../srcdocker/k8s-train"
+			"path": "../../src/Reporting"
 		},
 		{
-			"path": "../../src/Reporting"
+			"path": "../ETL-Pod"
+		},
+		{
+			"path": "../linux-utils"
+		},
+		{
+			"path": "../k8s-train"
 		}
 	],
 	"settings": {}

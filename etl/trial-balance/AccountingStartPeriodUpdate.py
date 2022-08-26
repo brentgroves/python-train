@@ -37,19 +37,16 @@ try:
     # password2 = (sys.argv[2])
     # username3 = (sys.argv[3])
     # password3 = (sys.argv[4])
+    # mysql_ip = (sys.argv[5])
+    # mysql_port = (sys.argv[6])
+
     username2 = 'mgadmin' 
     password2 = 'WeDontSharePasswords1!' 
     username3 = 'root'
     password3 = 'password'
+    mysql_ip = '10.1.0.118'
+    mysql_port = '31008'
 
-    # params = (sys.argv[1])
-    # username = (sys.argv[2])
-    # password = (sys.argv[3])
-    # username2 = (sys.argv[4])
-    # password2 = (sys.argv[5])
-    # print(f"params={params}")
-    # print(f"params={params},username={username},password={password},username2={username2},password2={password2}")
-    # sys.exit(0)
     # https://geekflare.com/calculate-time-difference-in-python/
     start_time = datetime.now()
     end_time = datetime.now()
@@ -78,9 +75,9 @@ try:
 
 
     conn3 = mysql.connector.connect(user=username3, password=password3,
-                              host='10.1.0.116',
-                              port='31008',
-                              database='Plex')
+                                host=mysql_ip,
+                                port=mysql_port,
+                                database='Plex')
 
     cursor3 = conn3.cursor()
     # cursor2.callproc('get_laptop', [1, ])

@@ -36,6 +36,8 @@ try:
     # password = (sys.argv[4])
     # username2 = (sys.argv[5])
     # password2 = (sys.argv[6])
+    # mysql_ip = (sys.argv[7])
+    # mysql_port = (sys.argv[8])
 
     script_key = '1'
     error_bit = int('0')
@@ -43,6 +45,8 @@ try:
     password = 'WeDontSharePasswords1!'
     username2 = 'root'
     password2 = 'password'    # print(f"params={params}")
+    mysql_ip = '10.1.0.118'
+    mysql_port = '31008'
 
     ret = 0
     # https://geekflare.com/calculate-time-difference-in-python/
@@ -52,8 +56,6 @@ try:
     current_time = start_time.strftime("%H:%M:%S")
     print_to_stdout(f"Current Time: {current_time=}")
     # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development?view=sql-server-ver15
-    username = 'mgadmin' 
-    password = 'WeDontSharePasswords1!' 
     conn = pyodbc.connect('DSN=dw;UID='+username+';PWD='+ password + ';DATABASE=mgdw')
 
     # https://stackoverflow.com/questions/11451101/retrieving-data-from-sql-using-pyodbc
@@ -63,8 +65,8 @@ try:
     cursor.close()
 
     conn2 = mysql.connector.connect(user=username2, password=password2,
-                            host='10.1.0.116',
-                            port='31008',
+                            host=mysql_ip,
+                            port=mysql_port,
                             database='ETL')
     cursor2 = conn2.cursor()
     # cursor2.callproc('get_laptop', [1, ])

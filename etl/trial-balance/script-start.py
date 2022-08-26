@@ -34,12 +34,16 @@ try:
     # password = (sys.argv[3])
     # username2 = (sys.argv[4])
     # password2 = (sys.argv[5])
+    # mysql_ip = (sys.argv[6])
+    # mysql_port = (sys.argv[7])
 
     script_key = '1'
     username = 'mgadmin'
     password = 'WeDontSharePasswords1!'
     username2 = 'root'
     password2 = 'password'    # print(f"params={params}")
+    mysql_ip = '10.1.0.118'
+    mysql_port = '31008'
 
     ret = 0
     # https://geekflare.com/calculate-time-difference-in-python/
@@ -58,8 +62,8 @@ try:
     cursor.close()
 
     conn2 = mysql.connector.connect(user=username2, password=password2,
-                            host='10.1.0.116',
-                            port='31008',
+                            host=mysql_ip,
+                            port=mysql_port,
                             database='ETL')
     cursor2 = conn2.cursor()
     # cursor2.callproc('get_laptop', [1, ])

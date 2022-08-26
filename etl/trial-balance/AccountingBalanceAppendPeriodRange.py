@@ -37,6 +37,8 @@ try:
     # password2 = (sys.argv[5])
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
+    # mysql_ip = (sys.argv[8])
+    # mysql_port = (sys.argv[9])
 
     # pcn = '300758'
     pcn = '123681'
@@ -46,10 +48,9 @@ try:
     password2 = 'WeDontSharePasswords1!'
     username3 = 'root'
     password3 = 'password'   
-    # print(f"params={params}")
-    # print(f"params={params}")
-    # print(f"params={params},username={username},password={password},username2={username2},password2={password2}")
-    # sys.exit(0)
+    mysql_ip = '10.1.0.118'
+    mysql_port = '31008'
+
     # https://geekflare.com/calculate-time-difference-in-python/
     start_time = datetime.now()
     end_time = datetime.now()
@@ -58,8 +59,8 @@ try:
     print_to_stdout(f"Current Time: {current_time=}")
 
     conn3 = mysql.connector.connect(user=username3, password=password3,
-                            host='10.1.0.116',
-                            port='31008',
+                            host=mysql_ip,
+                            port=mysql_port,
                             database='Plex')
 
     cursor3 = conn3.cursor()

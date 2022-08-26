@@ -37,6 +37,8 @@ try:
     # password2 = (sys.argv[5])
     # username3 = (sys.argv[6])
     # password3 = (sys.argv[7])
+    # mysql_ip = (sys.argv[8])
+    # mysql_port = (sys.argv[9])
 
     pcn_list = '123681,300758'
     # pcn_list = '123681,300758,310507,306766,300757'
@@ -46,6 +48,8 @@ try:
     password2 = 'WeDontSharePasswords1!'
     username3 = 'root'
     password3 = 'password'
+    mysql_ip = '10.1.0.118'
+    mysql_port = '31008'
 
     # https://geekflare.com/calculate-time-difference-in-python/
     start_time = datetime.now()
@@ -117,8 +121,8 @@ try:
     # conn2 = pyodbc.connect('DSN=dw;UID='+username2+';PWD='+ password2 + ';DATABASE=mgdw')
 
     conn3 = mysql.connector.connect(user=username3, password=password3,
-                              host='10.1.0.116',
-                              port='31008',
+                              host=mysql_ip,
+                              port=mysql_port,
                               database='Plex')
     # conn3 = mysql.connector.connect(user='root', password='password',
     #                           host='10.1.0.116',
