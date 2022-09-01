@@ -49,7 +49,7 @@ try:
     password2 = 'WeDontSharePasswords1!'
     username3 = 'root'
     password3 = 'password'
-    mysql_ip = '10.1.0.118'
+    mysql_ip = 'reports03'
     mysql_port = '31008'
    
     # print(f"params={params}")
