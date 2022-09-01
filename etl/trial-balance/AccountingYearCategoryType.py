@@ -49,7 +49,7 @@ try:
     password2 = 'WeDontSharePasswords1!'
     username3 = 'root'
     password3 = 'password'
-    mysql_ip = 'reports03'
+    mysql_host = 'reports03'
     mysql_port = '31008'
    
     # print(f"params={params}")
@@ -133,7 +133,7 @@ try:
     # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
 
     conn3 = mysql.connector.connect(user=username3, password=password3,
-                              host=mysql_ip,
+                              host=mysql_host,
                               port=mysql_port,
                               database='Plex')
 
