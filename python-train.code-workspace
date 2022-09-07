@@ -4,9 +4,6 @@
 			"path": "."
 		},
 		{
-			"path": "../conda-env"
-		},
-		{
 			"path": "../ETL-Pod"
 		},
 		{
