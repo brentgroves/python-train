@@ -1,5 +1,7 @@
 #!/home/bgroves@BUSCHE-CNC.COM/anaconda3/envs/etl/bin/python
+# https://medium.com/@neonforge/how-to-send-emails-with-attachments-with-python-by-using-microsoft-outlook-or-office365-smtp-b20405c9e63a
 # https://realpython.com/python-send-email/
+# https://medium.com/mlearning-ai/use-python-to-send-outlook-emails-d673ce9e33e4
 import smtplib
 import base64
 
