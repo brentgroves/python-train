@@ -4,17 +4,89 @@
 #!/miniconda/bin/python
 #!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python # for debugging
 #!/home/bgroves@BUSCHE-CNC.COM/anaconda3/bin/python
+# https://queirozf.com/entries/python-3-subprocess-examples
+# https://queirozf.com/entries/python-3-subprocess-examples
+# https://docs.python.org/3/library/asyncio-subprocess.html
+# https://www.simplilearn.com/tutorials/python-tutorial/subprocess-in-python#what_is_the_subprocess_call
+# https://docs.python.org/3/library/subprocess.html#subprocess.call
 # https://raw.githubusercontent.com/rogalmic/vscode-bash-debug/gif/images/bash-debug-samp-launch-autoconfig.gif
 # https://marketplace.visualstudio.com/items?itemName=rogalmic.bash-debug
 # https://janakiev.com/blog/python-shell-commands/
 # https://www.bogotobogo.com/python/python_subprocess_module.php
 import os
 import subprocess
+import sys
+
+# The main difference is that subprocess. run() executes a command
+# and waits for it to finish, while with subprocess. Popen you can 
+# continue doing your stuff while the process finishes and then 
+# just repeatedly call Popen.communicate() yourself to pass and 
+# receive data to your process.
+
+# https://docs.python.org/3/library/subprocess.html#subprocess.Popen.communicate
+# proc = subprocess.Popen(...)
+# try:
+#     outs, errs = proc.communicate(timeout=15)
+# except TimeoutExpired:
+#     proc.kill()
+#     outs, errs = proc.communicate()
+# If the process does not terminate after timeout seconds, a TimeoutExpired exception will be raised. Catching this exception and retrying communication will not lose any output.
+
+# The child process is not killed if the timeout expires, so in order to cleanup properly a well-behaved application should kill the child process and finish communication:
+
+os.chdir('/home/bgroves@BUSCHE-CNC.COM/src/python-train/how_to/run_shell_commands')
+# cp = subprocess.run(["ls","-lha"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+# print(cp.stdout)
+result = subprocess.Popen('./main.sh', shell=True)
+print(f'\nFrom run_shell_command.py -> result={result}')
+
+sys.exit();
+
+
+# run() behaves mostly the same way as call() and you should use it instead of call() for version 3.5 onwards.
+# subprocess.run() does not raise an exception if the underlying process errors!
+cp = subprocess.run(["ls","-lha"])
+print(cp)
+print(cp.returncode)
+# CompletedProcess(args=['ls', '-lha'], returncode=0)
+
+# run() example: store output and error message in string
+# If the underlying process returns a nonzero exit code, you will not get an exception; the error message can be accessed via the stderr attribute in the CompletedProcess object.
+# case 1: process return 0 exit code
+
+cp = subprocess.run(["ls","-lha"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+print(cp.stdout)
+# total 20K
+# drwxrwxr-x  3 felipe felipe 4,0K Nov  4 15:28 .
+# drwxrwxr-x 39 felipe felipe 4,0K Nov  3 18:31 ..
+# drwxrwxr-x  2 felipe felipe 4,0K Nov  3 19:32 .ipynb_checkpoints
+# -rw-rw-r--  1 felipe felipe 5,5K Nov  4 15:28 main.ipynb
+print(cp.stderr)
+# '' (empty string)
+print(cp.returncode)
+# 0
+
+cp = subprocess.run(["ls","foo bar"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+print(cp.stdout)
+# '' (empty string)
+print(cp.stderr)
+# ls: cannot access 'foo bar': No such file or directory
+print(cp.returncode)
+# 2
+
+try:
+    cp = subprocess.run(["xxxx","foo bar"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+except FileNotFoundError as e:
+    print(e)
+    # [Errno 2] No such file or directory: 'xxxx'
+
 # This only prints the return code of the command
 # If you save this as a script and run it, you will see the output in the command line. 
 # The problem with this approach is in its inflexibility since you can’t even get the resulting output as a variable. 
 # You can read more about this function in the documentation.
-
+# https://queirozf.com/entries/python-3-subprocess-examples
 print(os.system('pwd'))
 
 # https://www.bogotobogo.com/python/python_subprocess_module.php
@@ -103,8 +175,7 @@ subprocess.call('echo $PATH', shell=True)
 # In other words, using an intermediate shell means that variables, glob patterns, and other special shell features in the command string 
 # are processed before the command is run. Here, in the example, $HOME was processed 
 # before the echo command. Actually, this is the case of command with shell expansion while the command ls -l considered as a simple command.
-
-subprocess.call('./main.sh', shell=True)
-
+result = subprocess.call('./main.sh', shell=True)
+print(f'\nFrom run_shell_command.py -> result={result}')
 
 

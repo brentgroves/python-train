@@ -11,7 +11,7 @@ export em=""
 export emline=""
 export dm=""
 export line=""
-export tm=""
+export tm=""sys.
 export result=0
 
 export pcn=""
@@ -57,8 +57,8 @@ printf "username = $username"
 script="lv2"
 cd lv2
 source lv2.sh 
-# echo "lv2 result=$result"
-
+printf "\nFrom main.sh -> lv2 result=$result"
+exit $result
 
 # script="AccountingYearCategoryType"
 # cd ../AccountingYearCategoryType
