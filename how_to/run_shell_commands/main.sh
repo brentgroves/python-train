@@ -17,6 +17,18 @@ export result=0
 export pcn=""
 export pcn_list="123681,300758"
 
+# export username=$(</etc/foo/username)
+# export password=$(</etc/foo/password)
+# export username2=$(</etc/foo/username2)
+# export password2=$(</etc/foo/password2)
+# export username3=$(</etc/foo/username3)
+# export password3=$(</etc/foo/password3)
+# export username4=$(</etc/foo/username4)
+# export password4=$(</etc/foo/password4)
+# export MYSQL_HOST=$(</etc/foo/MYSQL_HOST)
+# export MYSQL_PORT=$(</etc/foo/MYSQL_PORT)
+# export AZURE_DW=$(</etc/foo/AZURE_DW)
+
 export username="mg.odbcalbion"
 export password="Mob3xalbion"
 export username2="mgadmin"

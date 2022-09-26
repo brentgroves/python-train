@@ -53,7 +53,8 @@ print(cp.returncode)
 # run() example: store output and error message in string
 # If the underlying process returns a nonzero exit code, you will not get an exception; the error message can be accessed via the stderr attribute in the CompletedProcess object.
 # case 1: process return 0 exit code
-
+# Using universal_newlines=True converts the output to a string instead of a byte array.
+# If shell=True, the command string is interpreted as a raw shell command.
 cp = subprocess.run(["ls","-lha"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 print(cp.stdout)
