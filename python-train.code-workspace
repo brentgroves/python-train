@@ -1,17 +1,16 @@
 {
 	"folders": [
 		{
-<<<<<<< HEAD
 			"path": "../ETL-Pod"
 		},
 		{
 			"path": "../k8s-train"
-=======
-			"path": "."
 		},
 		{
 			"path": "../Reporting"
->>>>>>> ab80b41c8e8ccb66497119d369eb757ac1b4d56f
+		},
+		{
+			"path": "../linux-utils"
 		}
 	],
 	"settings": {},
